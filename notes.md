@@ -8,13 +8,13 @@ The library itself depends only on the *go standard libray* and uses `sql.DB` fo
 
 The core library by itself does not care about any env variables. You can pass environment vaues in the supporting command-line app. The command-line version of _migrathor_ uses [ff](github.com/peterbourgon/ff) under its hood and parses setting in exactly this order and priority:
 
-* **flags** (override *config file*)
-* **config file** (override *env variables*)
+* **flags** (overrides *config file*)
+* **config file** (overrides *env variables*)
 * **environment variables** (least priority)
 
 ## Transactions
 
-PostgreSQL allows DDL changes transaction support. _Migrathor_ uses this fact and runs every single migration in its own transaction. However, there are certain SQL commands which aren't supported within transactions (see this [list](#sql-commands-not-supported-within-transactions)).
+PostgreSQL has transaction support for most DDL changes. _Migrathor_ takes advantage of this fact and runs every single migration in its own transaction. However, there are certain SQL commands which aren't supported within transactions (see this [list](#sql-commands-not-supported-within-transcations)).
 
 _Migrathor_ takes a pragmatic approach for such occasions:
 
@@ -34,7 +34,7 @@ That course of action proved too brittle and limiting. The occurence of false po
 
 ### SQL commands not supported within transcations
 
-If an unsupported statement gets executed in a transaction, PostgreSQL usually returns the error code `25001 (active_sql_transaction)`. The error message indicates the statement or keyword which isn't allowed within transactions.
+If one tries to execute an unsupported statement within a transaction, PostgreSQL usually returns the error code `25001 (active_sql_transaction)`. The error message indicates the statement or keyword which isn't allowed within transactions.
 
 List of common commands unsupported in transactions:
 
