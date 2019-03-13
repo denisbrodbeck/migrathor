@@ -48,13 +48,7 @@ func ParseAndRun(stdout, stderr io.Writer, stdin io.Reader, args []string) int {
 	}
 
 	// wire up miration with user-provided migration table und connect library logger to stdout
-	table := func(m *migrathor.Migration) {
-		m.Table = *flagTable
-	}
-	logger := func(m *migrathor.Migration) {
-		m.Logger = out.Print
-	}
-	migration := migrathor.New(*flagPath, table, logger)
+	migration := migrathor.New(*flagPath, migrathor.WithHistoryTable(*flagTable), migrathor.WithLogger(out.Print))
 
 	// parse commands
 	commands := fs.Args()
